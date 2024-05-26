@@ -1,14 +1,8 @@
-module application.banco {
+module application.proyecto_bases_datos {
     requires javafx.controls;
     requires javafx.fxml;
 
-    requires org.controlsfx.controls;
-    requires com.dlsc.formsfx;
-    requires static lombok;
-    requires java.sql;
-    requires org.apache.commons.codec;
-    requires mysql.connector.j;
 
-    opens application.banco to javafx.fxml;
-    exports application.banco;
+    opens application.proyecto_bases_datos to javafx.fxml;
+    exports application.proyecto_bases_datos;
 }
