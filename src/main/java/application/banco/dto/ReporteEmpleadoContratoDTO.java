@@ -1,14 +1,16 @@
 package application.banco.dto;
 
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.sql.Date;
 
 @Getter
 @Setter
-public class ReporteEmpleadoContratoDTO {
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class ReporteEmpleadoContratoDTO implements Reporte {
     private int empleadoCodigo;
     private String nombreEmpleado;
     private int contratoCodigo;

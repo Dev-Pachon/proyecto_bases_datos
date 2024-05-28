@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class ReporteEmpleadoProfesionDTO {
+public class ReporteEmpleadoProfesionDTO implements Reporte {
     private int empleadoCodigo;
     private String nombreEmpleado;
     private int profesionCodigo;
