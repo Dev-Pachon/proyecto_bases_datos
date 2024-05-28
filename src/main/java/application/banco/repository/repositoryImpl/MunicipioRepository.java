@@ -22,11 +22,11 @@ public class MunicipioRepository extends RepositoryWrapper<Integer, Municipio> {
 
     @Override
     public void delete(Integer integer) {
-        return null;
+
     }
 
     @Override
     public void update(Municipio municipio) {
-        return null;
+
     }
 }

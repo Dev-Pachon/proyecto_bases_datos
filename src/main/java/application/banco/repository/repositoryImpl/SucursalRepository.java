@@ -22,11 +22,11 @@ public class SucursalRepository extends RepositoryWrapper<Integer, Sucursal> {
 
     @Override
     public void delete(Integer integer) {
-        return null;
+
     }
 
     @Override
     public void update(Sucursal sucursal) {
-        return null;
+
     }
 }

@@ -22,11 +22,11 @@ public class NivelRepository extends RepositoryWrapper<Integer, Nivel> {
 
     @Override
     public void delete(Integer integer) {
-        return null;
+
     }
 
     @Override
     public void update(Nivel nivel) {
-        return null;
+
     }
 }

@@ -22,11 +22,11 @@ public class UsuarioRepository extends RepositoryWrapper<Integer, Usuario> {
 
     @Override
     public void delete(Integer integer) {
-        return null;
+
     }
 
     @Override
     public void update(Usuario usuario) {
-        return null;
+        
     }
 }

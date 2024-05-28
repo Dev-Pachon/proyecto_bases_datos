@@ -22,11 +22,11 @@ public class DepartamentoRepository extends RepositoryWrapper<Integer, Departame
 
     @Override
     public void delete(Integer integer) {
-        return null;
+
     }
 
     @Override
     public void update(Departamento departamento) {
-        return null;
+
     }
 }

@@ -22,11 +22,11 @@ public class ContratoRepository extends RepositoryWrapper<Integer, Contrato> {
 
     @Override
     public void delete(Integer integer) {
-        return null;
+
     }
 
     @Override
     public void update(Contrato contrato) {
-        return null;
+
     }
 }

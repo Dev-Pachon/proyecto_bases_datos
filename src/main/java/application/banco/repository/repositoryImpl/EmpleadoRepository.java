@@ -22,11 +22,11 @@ public class EmpleadoRepository extends RepositoryWrapper<Integer, Empleado> {
 
     @Override
     public void delete(Integer integer) {
-        return null;
+
     }
 
     @Override
     public void update(Empleado empleado) {
-        return null;
+
     }
 }

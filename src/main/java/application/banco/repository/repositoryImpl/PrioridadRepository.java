@@ -22,11 +22,11 @@ public class PrioridadRepository extends RepositoryWrapper<Integer, Prioridad> {
 
     @Override
     public void delete(Integer integer) {
-        return null;
+
     }
 
     @Override
     public void update(Prioridad prioridad) {
-        return null;
+
     }
 }

@@ -22,11 +22,11 @@ public class ProfesionRepository extends RepositoryWrapper<Integer, Profesion> {
 
     @Override
     public void delete(Integer integer) {
-        return null;
+
     }
 
     @Override
     public void update(Profesion profesion) {
-        return null;
+
     }
 }
