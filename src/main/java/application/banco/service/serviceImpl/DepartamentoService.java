@@ -1,5 +1,6 @@
 package application.banco.service.serviceImpl;
 
+import application.banco.error.CustomError;
 import application.banco.model.Departamento;
 import application.banco.repository.repositoryImpl.DepartamentoRepository;
 import application.banco.service.IDepartamentoService;
@@ -32,7 +33,7 @@ public class DepartamentoService implements IDepartamentoService {
     }
 
     @Override
-    public Departamento eliminarDepartamento(Integer id) {
+    public Departamento eliminarDepartamento(Integer id) throws CustomError {
         Departamento toDelete = departamentoRepository.findbyId(id);
         if (toDelete == null) {
             return null;
