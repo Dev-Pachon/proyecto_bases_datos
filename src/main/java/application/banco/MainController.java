@@ -1,21 +1,12 @@
 package application.banco;
 
 import application.banco.state.EstadoAplicacion;
-import com.dlsc.formsfx.model.structure.Field;
-import com.dlsc.formsfx.model.structure.Form;
-import com.dlsc.formsfx.model.structure.Group;
-import com.dlsc.formsfx.view.renderer.FormRenderer;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 
-import java.io.IOException;
-import java.util.Arrays;
-
-public class HelloController {
+public class MainController {
     @FXML
     private HBox loginStateHbox;
 

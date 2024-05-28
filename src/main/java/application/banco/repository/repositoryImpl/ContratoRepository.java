@@ -6,7 +6,7 @@ import application.banco.repository.RepositoryWrapper;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
+import java.sql.Date;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,17 +35,13 @@ public class ContratoRepository extends RepositoryWrapper<Integer, Contrato> {
             rs = ejecutarQuery(conexion, "SELECT * FROM Contrato");
             while (rs.next()) {
 
-                Empleado empleado = empleadoRepository.findbyId(rs.getInt(2));
-                Cargo cargo = cargoRepository.findbyId(rs.getInt(3));
-                Sucursal sucursal = sucursalRepository.findbyId(rs.getInt(4));
-
                 Contrato contrato = Contrato.builder()
                         .codigo(rs.getInt(1))
-                        .empleado(empleado.getCodigo())
-                        .cargo(cargo.getCodigo())
-                        .sucursal(sucursal.getCodigo())
-                        .fechaInicio((LocalDate) rs.getObject(5))
-                        .fechaFin((LocalDate) rs.getObject(6))
+                        .empleado(rs.getInt(2))
+                        .cargo(rs.getInt(3))
+                        .sucursal(rs.getInt(4))
+                        .fechaInicio((Date) rs.getObject(5))
+                        .fechaFin((Date) rs.getObject(6))
                         .build();
 
                 contratos.add(contrato);
@@ -68,19 +64,15 @@ public class ContratoRepository extends RepositoryWrapper<Integer, Contrato> {
 
         try {
             conexion = conectar();
-            rs = ejecutarQuery(conexion, "SELECT * FROM Cargo WHERE codigo = ?", integer);
+            rs = ejecutarQuery(conexion, "SELECT * FROM Contrato WHERE codigo = ?", integer);
             if (rs.next()) {
-                Empleado empleado = empleadoRepository.findbyId(rs.getInt(2));
-                Cargo cargo = cargoRepository.findbyId(rs.getInt(3));
-                Sucursal sucursal = sucursalRepository.findbyId(rs.getInt(4));
-
                 contrato = Contrato.builder()
                         .codigo(rs.getInt(1))
-                        .empleado(empleado.getCodigo())
-                        .cargo(cargo.getCodigo())
-                        .sucursal(sucursal.getCodigo())
-                        .fechaInicio((LocalDate) rs.getObject(5))
-                        .fechaFin((LocalDate) rs.getObject(6))
+                        .empleado(rs.getInt(2))
+                        .cargo(rs.getInt(3))
+                        .sucursal(rs.getInt(4))
+                        .fechaInicio((Date) rs.getObject(5))
+                        .fechaFin((Date) rs.getObject(6))
                         .build();
             }
         } catch (SQLException e) {
@@ -95,58 +87,58 @@ public class ContratoRepository extends RepositoryWrapper<Integer, Contrato> {
     @Override
     public void save(Contrato contrato) {
         Connection conexion = null;
-        ResultSet rs = null;
+        int rs = -1;
 
         try {
             conexion = conectar();
-            rs = ejecutarQuery(conexion, "INSERT INTO `Contrato` (`Empleado`, `Cargo`, `Sucursal`, `FechaInicio`, `FechaFin`) VALUES (?, ?, ?, ?, ?)",
+            rs = modificarQuery(conexion, "INSERT INTO `Contrato` (`Empleado`, `Cargo`, `Sucursal`, `FechaInicio`, `FechaFin`) VALUES (?, ?, ?, ?, ?)",
                     contrato.getEmpleado(),
                     contrato.getCargo(),
                     contrato.getSucursal(),
                     contrato.getFechaInicio(),
                     contrato.getFechaFin());
-            if (!rs.next()) {
+            if (rs == -1) {
                 throw new RuntimeException("Contrato no guardado");
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            finalizarConexion(conexion, null, rs);
+            finalizarConexion(conexion, null, null);
         }
     }
 
     @Override
     public void delete(Integer integer) {
         Connection conexion = null;
-        ResultSet rs = null;
+        int rs = -1;
 
         try {
             conexion = conectar();
-            rs = ejecutarQuery(conexion, "DELETE FROM Contrato WHERE Codigo = ?", integer);
-            if (!rs.next()) {
+            rs = modificarQuery(conexion, "DELETE FROM Contrato WHERE Codigo = ?", integer);
+            if (rs == -1) {
                 throw new RuntimeException("Contrato no eliminada o no existe");
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            finalizarConexion(conexion, null, rs);
+            finalizarConexion(conexion, null, null);
         }
     }
 
     @Override
     public void update(Contrato contrato) {
         Connection conexion = null;
-        ResultSet rs = null;
+        int rs = -1;
 
         try {
             conexion = conectar();
-            rs = ejecutarQuery(conexion, """
+            rs = modificarQuery(conexion, """
                             UPDATE Contrato t
-                            SET t.Empleado = '?',
-                                t.Cargo  = '?',
-                                t.Sucursal  = '?',
-                                t.FechaInicio  = '?',
-                                t.FechaFin  = '?',
+                            SET t.Empleado = ?,
+                                t.Cargo  = ?,
+                                t.Sucursal  = ?,
+                                t.FechaInicio  = ?,
+                                t.FechaFin  = ?
                             WHERE t.Codigo = ?;
                             """,
                     contrato.getEmpleado(),
@@ -155,13 +147,13 @@ public class ContratoRepository extends RepositoryWrapper<Integer, Contrato> {
                     contrato.getFechaInicio(),
                     contrato.getFechaFin(),
                     contrato.getCodigo());
-            if (!rs.next()) {
+            if (rs == -1) {
                 throw new RuntimeException("Contrato no actualizada o no existe");
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            finalizarConexion(conexion, null, rs);
+            finalizarConexion(conexion, null, null);
         }
     }
 }

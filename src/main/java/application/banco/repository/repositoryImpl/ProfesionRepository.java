@@ -66,68 +66,96 @@ public class ProfesionRepository extends RepositoryWrapper<Integer, Profesion> {
         return profesion;
     }
 
-    @Override
-    public void save(Profesion profesion) {
+    public List<Profesion> findAllByEmpleadoId(Integer empleadoId) {
         Connection conexion = null;
         ResultSet rs = null;
 
+        List<Profesion> profesiones = new ArrayList<>();
+
         try {
             conexion = conectar();
-            rs = ejecutarQuery(conexion, "INSERT INTO `Profesion` (`Nombre`, `Descripcion`) VALUES (?, ?)",
-                    profesion.getNombre(),
-                    profesion.getDescripcion()
-            );
-            if (!rs.next()) {
-                throw new RuntimeException("Profesion no guardado");
+            rs = ejecutarQuery(conexion, "SELECT p.* FROM DetalleEmpleadoProfesion ep, Profesion p WHERE ep.Empleado = ? AND ep.Profesion = p.Codigo", empleadoId);
+            while (rs.next()) {
+
+                Profesion funcion = Profesion.builder()
+                        .codigo(rs.getInt(1))
+                        .nombre(rs.getString(2))
+                        .descripcion(rs.getString(3))
+                        .build();
+
+                profesiones.add(funcion);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
             finalizarConexion(conexion, null, rs);
+        }
+
+        return profesiones;
+    }
+
+    @Override
+    public void save(Profesion profesion) {
+        Connection conexion = null;
+        int rs = -1;
+
+        try {
+            conexion = conectar();
+            rs = modificarQuery(conexion, "INSERT INTO `Profesion` (`Nombre`, `Descripcion`) VALUES (?, ?)",
+                    profesion.getNombre(),
+                    profesion.getDescripcion()
+            );
+            if (rs == -1) {
+                throw new RuntimeException("Profesion no guardado");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            finalizarConexion(conexion, null, null);
         }
     }
 
     @Override
     public void delete(Integer integer) {
         Connection conexion = null;
-        ResultSet rs = null;
+        int rs = -1;
 
         try {
             conexion = conectar();
-            rs = ejecutarQuery(conexion, "DELETE FROM Profesion WHERE Codigo = ?", integer);
-            if (!rs.next()) {
+            rs = modificarQuery(conexion, "DELETE FROM Profesion WHERE Codigo = ?", integer);
+            if (rs == -1) {
                 throw new RuntimeException("Profesion no eliminada o no existe");
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            finalizarConexion(conexion, null, rs);
+            finalizarConexion(conexion, null, null);
         }
     }
 
     @Override
     public void update(Profesion profesion) {
         Connection conexion = null;
-        ResultSet rs = null;
+        int rs = -1;
 
         try {
             conexion = conectar();
-            rs = ejecutarQuery(conexion, """
+            rs = modificarQuery(conexion, """
                             UPDATE Profesion t
-                            SET t.Nombre = '?',
-                                t.Descripcion  = '?',
+                            SET t.Nombre = ?,
+                                t.Descripcion  = ?
                             WHERE t.Codigo = ?;
                             """,
                     profesion.getNombre(),
                     profesion.getDescripcion(),
                     profesion.getCodigo());
-            if (!rs.next()) {
+            if (rs == -1) {
                 throw new RuntimeException("Profesion no actualizada o no existe");
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            finalizarConexion(conexion, null, rs);
+            finalizarConexion(conexion, null, null);
         }
     }
 }

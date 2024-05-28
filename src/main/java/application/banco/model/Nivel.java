@@ -12,4 +12,9 @@ import lombok.NoArgsConstructor;
 public class Nivel {
     private int codigo;
     private String nombre;
+
+    @Override
+    public String toString() {
+        return nombre;
+    }
 }

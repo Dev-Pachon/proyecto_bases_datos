@@ -1,11 +1,13 @@
 package application.banco.repository.repositoryImpl;
 
+import application.banco.error.CustomError;
 import application.banco.model.*;
 import application.banco.repository.RepositoryWrapper;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -69,64 +71,66 @@ public class DepartamentoRepository extends RepositoryWrapper<Integer, Departame
     @Override
     public void save(Departamento departamento) {
         Connection conexion = null;
-        ResultSet rs = null;
+        int rs = -1;
 
         try {
             conexion = conectar();
-            rs = ejecutarQuery(conexion, "INSERT INTO `Departamento` (`Nombre`, `Poblacion`) VALUES (?, ?)",
+            rs = modificarQuery(conexion, "INSERT INTO `Departamento` (`Nombre`, `Poblacion`) VALUES (?, ?)",
                     departamento.getNombre(),
                     departamento.getPoblacion());
-            if (!rs.next()) {
+            if (rs == -1) {
                 throw new RuntimeException("Departamento no guardado");
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            finalizarConexion(conexion, null, rs);
+            finalizarConexion(conexion, null, null);
         }
     }
 
     @Override
-    public void delete(Integer integer) {
+    public void delete(Integer integer) throws CustomError {
         Connection conexion = null;
-        ResultSet rs = null;
+        int rs = -1;
 
         try {
             conexion = conectar();
-            rs = ejecutarQuery(conexion, "DELETE FROM Departamento WHERE Codigo = ?", integer);
-            if (!rs.next()) {
+            rs = modificarQuery(conexion, "DELETE FROM Departamento WHERE Codigo = ?", integer);
+            if (rs == -1) {
                 throw new RuntimeException("Departamento no eliminado o no existe");
             }
+        } catch (SQLIntegrityConstraintViolationException e) {
+            throw new CustomError("El departamento tiene municipios asociados");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            finalizarConexion(conexion, null, rs);
+            finalizarConexion(conexion, null, null);
         }
     }
 
     @Override
     public void update(Departamento departamento) {
         Connection conexion = null;
-        ResultSet rs = null;
+        int rs = -1;
 
         try {
             conexion = conectar();
-            rs = ejecutarQuery(conexion, """
+            rs = modificarQuery(conexion, """
                             UPDATE Departamento t
-                            SET t.Nombre = '?',
-                                t.Poblacion  = '?',
+                            SET t.Nombre = ?,
+                                t.Poblacion  = ?
                             WHERE t.Codigo = ?;
                             """,
                     departamento.getNombre(),
                     departamento.getPoblacion(),
                     departamento.getCodigo());
-            if (!rs.next()) {
+            if (rs == -1) {
                 throw new RuntimeException("Departamento no actualizada o no existe");
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            finalizarConexion(conexion, null, rs);
+            finalizarConexion(conexion, null, null);
         }
     }
 }

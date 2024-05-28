@@ -30,14 +30,12 @@ public class UsuarioRepository extends RepositoryWrapper<Integer, Usuario> {
             conexion = conectar();
             rs = ejecutarQuery(conexion, "SELECT * FROM Usuario");
             while (rs.next()) {
-                Nivel nivel = nivelRepository.findbyId(rs.getInt(5));
-
                 Usuario usuario = Usuario.builder()
                         .codigo(rs.getInt(1))
                         .nomUsuario(rs.getString(2))
                         .clave(rs.getString(3))
                         .fechaCreacion((LocalDateTime) rs.getObject(4))
-                        .nivel(nivel.getCodigo())
+                        .nivel(rs.getInt(5))
                         .build();
 
                 usuarios.add(usuario);
@@ -62,14 +60,13 @@ public class UsuarioRepository extends RepositoryWrapper<Integer, Usuario> {
             conexion = conectar();
             rs = ejecutarQuery(conexion, "SELECT * FROM Usuario WHERE codigo = ?", integer);
             if (rs.next()) {
-                Nivel nivel = nivelRepository.findbyId(rs.getInt(5));
 
                 usuario = Usuario.builder()
                         .codigo(rs.getInt(1))
                         .nomUsuario(rs.getString(2))
                         .clave(rs.getString(3))
                         .fechaCreacion((LocalDateTime) rs.getObject(4))
-                        .nivel(nivel.getCodigo())
+                        .nivel(rs.getInt(5))
                         .build();
             }
         } catch (SQLException e) {
@@ -91,14 +88,12 @@ public class UsuarioRepository extends RepositoryWrapper<Integer, Usuario> {
             conexion = conectar();
             rs = ejecutarQuery(conexion, "SELECT * FROM Usuario WHERE NomUsuario = ?", nomUsuario);
             if (rs.next()) {
-                Nivel nivel = nivelRepository.findbyId(rs.getInt(5));
-
                 usuario = Usuario.builder()
                         .codigo(rs.getInt(1))
                         .nomUsuario(rs.getString(2))
                         .clave(rs.getString(3))
                         .fechaCreacion((LocalDateTime) rs.getObject(4))
-                        .nivel(nivel.getCodigo())
+                        .nivel(rs.getInt(5))
                         .build();
             }
         } catch (SQLException e) {
@@ -161,9 +156,9 @@ public class UsuarioRepository extends RepositoryWrapper<Integer, Usuario> {
             conexion = conectar();
             rs = modificarQuery(conexion, """
                             UPDATE Usuario t
-                            SET t.NomUsuario = '?',
-                                t.Clave  = '?',
-                                t.Nivel  = '?',
+                            SET t.NomUsuario = ?,
+                                t.Clave  = ?,
+                                t.Nivel  = ?
                             WHERE t.Codigo = ?;
                             """,
                     usuario.getNomUsuario(),

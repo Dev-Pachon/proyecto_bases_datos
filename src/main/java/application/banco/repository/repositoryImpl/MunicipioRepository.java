@@ -32,16 +32,12 @@ public class MunicipioRepository extends RepositoryWrapper<Integer, Municipio> {
             conexion = conectar();
             rs = ejecutarQuery(conexion, "SELECT * FROM Municipio");
             while (rs.next()) {
-
-                Prioridad prioridad = prioridadRepository.findbyId(rs.getInt(4));
-                Departamento departamento = departamentoRepository.findbyId(rs.getInt(5));
-
                 Municipio municipio = Municipio.builder()
                         .codigo(rs.getInt(1))
                         .nombre(rs.getString(2))
                         .poblacion(rs.getInt(3))
-                        .prioridad(prioridad.getCodigo())
-                        .departamento(departamento.getCodigo())
+                        .prioridad(rs.getInt(4))
+                        .departamento(rs.getInt(5))
                         .build();
 
                 municipios.add(municipio);
@@ -66,15 +62,12 @@ public class MunicipioRepository extends RepositoryWrapper<Integer, Municipio> {
             conexion = conectar();
             rs = ejecutarQuery(conexion, "SELECT * FROM Municipio WHERE codigo = ?", integer);
             if (rs.next()) {
-                Prioridad prioridad = prioridadRepository.findbyId(rs.getInt(4));
-                Departamento departamento = departamentoRepository.findbyId(rs.getInt(5));
-
                 municipio = Municipio.builder()
                         .codigo(rs.getInt(1))
                         .nombre(rs.getString(2))
                         .poblacion(rs.getInt(3))
-                        .prioridad(prioridad.getCodigo())
-                        .departamento(departamento.getCodigo())
+                        .prioridad(rs.getInt(4))
+                        .departamento(rs.getInt(5))
                         .build();
             }
         } catch (SQLException e) {
@@ -89,57 +82,57 @@ public class MunicipioRepository extends RepositoryWrapper<Integer, Municipio> {
     @Override
     public void save(Municipio municipio) {
         Connection conexion = null;
-        ResultSet rs = null;
+        int rs = -1;
 
         try {
             conexion = conectar();
-            rs = ejecutarQuery(conexion, "INSERT INTO `Municipio` (`Nombre`, `Poblacion`, `Prioridad`, `Departamento`) VALUES (?, ?, ?, ?)",
+            rs = modificarQuery(conexion, "INSERT INTO `Municipio` (`Nombre`, `Poblacion`, `Prioridad`, `Departamento`) VALUES (?, ?, ?, ?)",
                     municipio.getNombre(),
                     municipio.getPoblacion(),
                     municipio.getPrioridad(),
                     municipio.getDepartamento()
             );
-            if (!rs.next()) {
+            if (rs == -1) {
                 throw new RuntimeException("Municipio no guardado");
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            finalizarConexion(conexion, null, rs);
+            finalizarConexion(conexion, null, null);
         }
     }
 
     @Override
     public void delete(Integer integer) {
         Connection conexion = null;
-        ResultSet rs = null;
+        int rs = -1;
 
         try {
             conexion = conectar();
-            rs = ejecutarQuery(conexion, "DELETE FROM Municipio WHERE Codigo = ?", integer);
-            if (!rs.next()) {
+            rs = modificarQuery(conexion, "DELETE FROM Municipio WHERE Codigo = ?", integer);
+            if (rs == -1) {
                 throw new RuntimeException("Municipio no eliminada o no existe");
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            finalizarConexion(conexion, null, rs);
+            finalizarConexion(conexion, null, null);
         }
     }
 
     @Override
     public void update(Municipio municipio) {
         Connection conexion = null;
-        ResultSet rs = null;
+        int rs = -1;
 
         try {
             conexion = conectar();
-            rs = ejecutarQuery(conexion, """
+            rs = modificarQuery(conexion, """
                             UPDATE Municipio t
-                            SET t.Nombre = '?',
-                                t.Poblacion  = '?',
-                                t.Prioridad  = '?',
-                                t.Departamento  = '?',
+                            SET t.Nombre = ?,
+                                t.Poblacion  = ?,
+                                t.Prioridad  = ?,
+                                t.Departamento  = ?
                             WHERE t.Codigo = ?;
                             """,
                     municipio.getNombre(),
@@ -147,13 +140,13 @@ public class MunicipioRepository extends RepositoryWrapper<Integer, Municipio> {
                     municipio.getPrioridad(),
                     municipio.getDepartamento(),
                     municipio.getCodigo());
-            if (!rs.next()) {
+            if (rs == -1) {
                 throw new RuntimeException("Municipio no actualizada o no existe");
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            finalizarConexion(conexion, null, rs);
+            finalizarConexion(conexion, null, null);
         }
     }
 }

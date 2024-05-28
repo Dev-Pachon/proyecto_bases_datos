@@ -1,12 +1,11 @@
 package application.banco.state;
 
-import application.banco.HelloApplication;
+import application.banco.MainApplication;
 import application.banco.model.Usuario;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.stage.Stage;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -42,7 +41,7 @@ public class EstadoAplicacion {
 
     public void loadPage(String pageURI, String title) {
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource(pageURI));
+            FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource(pageURI));
             mainPane.setCenter(fxmlLoader.load());
             pageLabel.setText(title);
         } catch (IOException e) {

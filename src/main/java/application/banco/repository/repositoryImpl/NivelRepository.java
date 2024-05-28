@@ -67,62 +67,62 @@ public class NivelRepository extends RepositoryWrapper<Integer, Nivel> {
     @Override
     public void save(Nivel nivel) {
         Connection conexion = null;
-        ResultSet rs = null;
+        int rs = -1;
 
         try {
             conexion = conectar();
-            rs = ejecutarQuery(conexion, "INSERT INTO `Nivel` (`Nombre`) VALUES (?)",
+            rs = modificarQuery(conexion, "INSERT INTO `Nivel` (`Nombre`) VALUES (?)",
                     nivel.getNombre()
             );
-            if (!rs.next()) {
+            if (rs == -1) {
                 throw new RuntimeException("Nivel no guardado");
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            finalizarConexion(conexion, null, rs);
+            finalizarConexion(conexion, null, null);
         }
     }
 
     @Override
     public void delete(Integer integer) {
         Connection conexion = null;
-        ResultSet rs = null;
+        int rs = -1;
 
         try {
             conexion = conectar();
-            rs = ejecutarQuery(conexion, "DELETE FROM Nivel WHERE Codigo = ?", integer);
-            if (!rs.next()) {
+            rs = modificarQuery(conexion, "DELETE FROM Nivel WHERE Codigo = ?", integer);
+            if (rs == -1) {
                 throw new RuntimeException("Nivel no eliminada o no existe");
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            finalizarConexion(conexion, null, rs);
+            finalizarConexion(conexion, null, null);
         }
     }
 
     @Override
     public void update(Nivel nivel) {
         Connection conexion = null;
-        ResultSet rs = null;
+        int rs = -1;
 
         try {
             conexion = conectar();
-            rs = ejecutarQuery(conexion, """
+            rs = modificarQuery(conexion, """
                             UPDATE Nivel t
-                            SET t.Nombre = '?',
+                            SET t.Nombre = ?
                             WHERE t.Codigo = ?;
                             """,
                     nivel.getNombre(),
                     nivel.getCodigo());
-            if (!rs.next()) {
+            if (rs == -1) {
                 throw new RuntimeException("Nivel no actualizado o no existe");
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            finalizarConexion(conexion, null, rs);
+            finalizarConexion(conexion, null, null);
         }
     }
 }

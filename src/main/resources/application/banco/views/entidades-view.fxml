@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+
+<TabPane fx:id="mainPane" side="RIGHT" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.banco.controller.EntidadesController">
+   <tabs>
+      <Tab fx:id="departamentoTab" text="Departamento" />
+      <Tab fx:id="tipoMunicipioTab" text="Tipo Municipio" />
+      <Tab fx:id="MunicipioTab" text="Municipio" />
+      <Tab fx:id="SucursalTab" text="Sucursales" />
+      <Tab fx:id="CargosTab" text="Cargos" />
+      <Tab fx:id="ProfesionalesTab" text="Profesionales" />
+      <Tab fx:id="EmpleadosTab" text="Empleados" />
+   </tabs>
+</TabPane>

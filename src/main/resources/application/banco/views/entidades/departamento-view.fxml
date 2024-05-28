@@ -10,16 +10,13 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 
-<SplitPane dividerPositions="0.6" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.banco.controller.ContratoController">
+<SplitPane dividerPositions="0.6" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.banco.controller.DepartamentoController">
    <items>
       <TableView fx:id="tableView" prefHeight="200.0" prefWidth="200.0">
         <columns>
-          <TableColumn fx:id="codigoTc" prefWidth="75.0" text="ID Codigo" />
-          <TableColumn fx:id="empleadoTc" prefWidth="75.0" text="ID Empleado" />
-            <TableColumn fx:id="cargoTc" prefWidth="75.0" text="ID Cargo" />
-            <TableColumn fx:id="sucursalTc" prefWidth="75.0" text="ID Sucursal" />
-            <TableColumn fx:id="fechaInicioTc" prefWidth="75.0" text="Fecha Inicio" />
-            <TableColumn fx:id="fechaFinTc" prefWidth="75.0" text="Fecha Fin" />
+          <TableColumn fx:id="codigoTc" prefWidth="75.0" text="Codigo" />
+          <TableColumn fx:id="nombreTc" prefWidth="75.0" text="Nombre" />
+            <TableColumn fx:id="poblacionTc" prefWidth="75.0" text="Poblacion" />
         </columns>
          <columnResizePolicy>
             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -27,7 +24,7 @@
       </TableView>
       <BorderPane fx:id="mainPane" prefHeight="16.0" prefWidth="84.0">
          <top>
-            <Label text="Contratos" BorderPane.alignment="CENTER">
+            <Label text="Departamentos" BorderPane.alignment="CENTER">
                <padding>
                   <Insets bottom="24.0" left="24.0" right="24.0" top="24.0" />
                </padding>
@@ -39,9 +36,9 @@
          <bottom>
             <HBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0" spacing="12.0" BorderPane.alignment="CENTER">
                <children>
-                  <Button fx:id="crearBtn" mnemonicParsing="false" onAction="#crearContrato" text="Crear nuevo" />
-                  <Button fx:id="actualizarBtn" mnemonicParsing="false" onAction="#actualizarContrato" text="Actualizar" />
-                  <Button fx:id="eliminarBtn" mnemonicParsing="false" onAction="#eliminarContrato" text="Eliminar" />
+                  <Button fx:id="crearBtn" mnemonicParsing="false" onAction="#crear" text="Crear nuevo" />
+                  <Button fx:id="actualizarBtn" mnemonicParsing="false" onAction="#actualizar" text="Actualizar" />
+                  <Button fx:id="eliminarBtn" mnemonicParsing="false" onAction="#eliminar" text="Eliminar" />
                </children>
                <padding>
                   <Insets bottom="8.0" left="16.0" right="16.0" top="8.0" />

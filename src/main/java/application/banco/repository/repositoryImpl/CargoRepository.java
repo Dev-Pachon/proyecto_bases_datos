@@ -33,13 +33,11 @@ public class CargoRepository extends RepositoryWrapper<Integer, Cargo> {
             rs = ejecutarQuery(conexion, "SELECT * FROM Cargo");
             while (rs.next()) {
 
-                List<Funcion> funciones = funcionRepository.findAllByCargoId(rs.getInt(1));
 
                 Cargo cargo = Cargo.builder()
                         .codigo(rs.getInt(1))
                         .nombre(rs.getString(2))
                         .salario(rs.getDouble(3))
-                        .funciones(funciones.stream().map(Funcion::getCodigo).toList())
                         .build();
                 cargos.add(cargo);
             }
@@ -49,7 +47,10 @@ public class CargoRepository extends RepositoryWrapper<Integer, Cargo> {
             finalizarConexion(conexion, null, rs);
         }
 
-        return cargos;
+        return cargos.stream().peek(cargo -> {
+            List<Funcion> funciones = funcionRepository.findAllByCargoId(cargo.getCodigo());
+            cargo.setFunciones(funciones.stream().map(Funcion::getCodigo).toList());
+        }).collect(Collectors.toList());
     }
 
     @Override
@@ -63,13 +64,11 @@ public class CargoRepository extends RepositoryWrapper<Integer, Cargo> {
             conexion = conectar();
             rs = ejecutarQuery(conexion, "SELECT * FROM Cargo WHERE codigo = ?", integer);
             if (rs.next()) {
-                List<Funcion> funciones = funcionRepository.findAllByCargoId(rs.getInt(1));
 
                 cargo = Cargo.builder()
                         .codigo(rs.getInt(1))
                         .nombre(rs.getString(2))
                         .salario(rs.getDouble(3))
-                        .funciones(funciones.stream().map(Funcion::getCodigo).toList())
                         .build();
             }
         } catch (SQLException e) {
@@ -77,6 +76,9 @@ public class CargoRepository extends RepositoryWrapper<Integer, Cargo> {
         } finally {
             finalizarConexion(conexion, null, rs);
         }
+
+        List<Funcion> funciones = funcionRepository.findAllByCargoId(cargo.getCodigo());
+        cargo.setFunciones(funciones.stream().map(Funcion::getCodigo).toList());
 
         return cargo;
     }
@@ -92,11 +94,6 @@ public class CargoRepository extends RepositoryWrapper<Integer, Cargo> {
                     cargo.getNombre(),
                     cargo.getSalario());
 
-            cargo.getFunciones().forEach(e -> {
-                Funcion funcion = funcionRepository.findbyId(e);
-                saveCargoFuncion(cargo, funcion);
-            });
-
             if (rs == -1) {
                 throw new RuntimeException("Cargo no guardado");
             }
@@ -105,6 +102,10 @@ public class CargoRepository extends RepositoryWrapper<Integer, Cargo> {
         } finally {
             finalizarConexion(conexion, null, null);
         }
+        cargo.getFunciones().forEach(e -> {
+            Funcion funcion = funcionRepository.findbyId(e);
+            saveCargoFuncion(cargo, funcion);
+        });
     }
 
     private void saveCargoFuncion(Cargo cargo, Funcion funcion) {
@@ -170,9 +171,9 @@ public class CargoRepository extends RepositoryWrapper<Integer, Cargo> {
             conexion = conectar();
             rs = modificarQuery(conexion, """
                             UPDATE Cargo t
-                            SET t.Nombre = '?',
-                                t.Salario  = '?',
-                            WHERE t.Codigo = ?;
+                            SET t.Nombre = ?,
+                                t.Salario  = ?,
+                            WHERE t.Codigo = ?;;
                             """,
                     cargo.getNombre(),
                     cargo.getSalario(),

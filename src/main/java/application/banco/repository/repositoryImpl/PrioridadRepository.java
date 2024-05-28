@@ -67,61 +67,61 @@ public class PrioridadRepository extends RepositoryWrapper<Integer, Prioridad> {
     @Override
     public void save(Prioridad prioridad) {
         Connection conexion = null;
-        ResultSet rs = null;
+        int rs = -1;
 
         try {
             conexion = conectar();
-            rs = ejecutarQuery(conexion, "INSERT INTO `Prioridad` (`Nombre`) VALUES (?)",
+            rs = modificarQuery(conexion, "INSERT INTO `Prioridad` (`Nombre`) VALUES (?)",
                     prioridad.getNombre());
-            if (!rs.next()) {
+            if (rs == -1) {
                 throw new RuntimeException("Prioridad no guardada");
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            finalizarConexion(conexion, null, rs);
+            finalizarConexion(conexion, null, null);
         }
     }
 
     @Override
     public void delete(Integer integer) {
         Connection conexion = null;
-        ResultSet rs = null;
+        int rs = -1;
 
         try {
             conexion = conectar();
-            rs = ejecutarQuery(conexion, "DELETE FROM Prioridad WHERE Codigo = ?", integer);
-            if (!rs.next()) {
+            rs = modificarQuery(conexion, "DELETE FROM Prioridad WHERE Codigo = ?", integer);
+            if (rs == -1) {
                 throw new RuntimeException("Prioridad no eliminada o no existe");
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            finalizarConexion(conexion, null, rs);
+            finalizarConexion(conexion, null, null);
         }
     }
 
     @Override
     public void update(Prioridad prioridad) {
         Connection conexion = null;
-        ResultSet rs = null;
+        int rs = -1;
 
         try {
             conexion = conectar();
-            rs = ejecutarQuery(conexion, """
+            rs = modificarQuery(conexion, """
                             UPDATE Prioridad t
-                            SET t.Nombre = '?',
+                            SET t.Nombre = ?
                             WHERE t.Codigo = ?;
                             """,
                     prioridad.getNombre(),
                     prioridad.getCodigo());
-            if (!rs.next()) {
+            if (rs == -1) {
                 throw new RuntimeException("Prioridad no actualizada o no existe");
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            finalizarConexion(conexion, null, rs);
+            finalizarConexion(conexion, null, null);
         }
     }
 }

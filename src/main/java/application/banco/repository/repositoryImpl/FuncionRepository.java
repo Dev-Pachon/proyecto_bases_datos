@@ -97,64 +97,64 @@ public class FuncionRepository extends RepositoryWrapper<Integer, Funcion> {
     @Override
     public void save(Funcion funcion) {
         Connection conexion = null;
-        ResultSet rs = null;
+        int rs = -1;
 
         try {
             conexion = conectar();
-            rs = ejecutarQuery(conexion, "INSERT INTO `Funcion` (`Nombre`, `Description`) VALUES (?, ?)",
+            rs = modificarQuery(conexion, "INSERT INTO `Funcion` (`Nombre`, `Description`) VALUES (?, ?)",
                     funcion.getNombre(),
                     funcion.getDescripcion());
-            if (!rs.next()) {
+            if (rs == -1) {
                 throw new RuntimeException("Funcion no guardado");
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            finalizarConexion(conexion, null, rs);
+            finalizarConexion(conexion, null, null);
         }
     }
 
     @Override
     public void delete(Integer integer) {
         Connection conexion = null;
-        ResultSet rs = null;
+        int rs = -1;
 
         try {
             conexion = conectar();
-            rs = ejecutarQuery(conexion, "DELETE FROM Funcion WHERE Codigo = ?", integer);
-            if (!rs.next()) {
+            rs = modificarQuery(conexion, "DELETE FROM Funcion WHERE Codigo = ?", integer);
+            if (rs == -1) {
                 throw new RuntimeException("Funcion no eliminada o no existe");
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            finalizarConexion(conexion, null, rs);
+            finalizarConexion(conexion, null, null);
         }
     }
 
     @Override
     public void update(Funcion funcion) {
         Connection conexion = null;
-        ResultSet rs = null;
+        int rs = -1;
 
         try {
             conexion = conectar();
-            rs = ejecutarQuery(conexion, """
+            rs = modificarQuery(conexion, """
                             UPDATE Funcion t
-                            SET t.Nombre = '?',
-                                t.Descripcion  = '?',
+                            SET t.Nombre = ?,
+                                t.Descripcion  = ?
                             WHERE t.Codigo = ?;
                             """,
                     funcion.getNombre(),
                     funcion.getDescripcion(),
                     funcion.getCodigo());
-            if (!rs.next()) {
+            if (rs == -1) {
                 throw new RuntimeException("Funcion no actualizada o no existe");
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            finalizarConexion(conexion, null, rs);
+            finalizarConexion(conexion, null, null);
         }
     }
 }

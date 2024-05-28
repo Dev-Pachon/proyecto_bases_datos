@@ -1,6 +1,6 @@
 package application.banco.controller;
 
-import application.banco.HelloApplication;
+import application.banco.MainApplication;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -32,16 +32,28 @@ public class RootController {
     @FXML
     void initialize() {
         transaccionesTab.setContent(getNode("views/transaciones-view.fxml"));
-        entidadesTab.setContent(getNode("views/transaciones-view.fxml"));
-        reportesTab.setContent(getNode("views/transaciones-view.fxml"));
-        utilidadesTab.setContent(getNode("views/transaciones-view.fxml"));
-        ayudaTab.setContent(getNode("views/transaciones-view.fxml"));
-        mainPane.getSelectionModel().clearAndSelect(2);
+        mainPane.getSelectionModel().select(transaccionesTab);
+        transaccionesTab.setOnSelectionChanged(event -> {
+            transaccionesTab.setContent(getNode("views/transaciones-view.fxml"));
+        });
+        entidadesTab.setOnSelectionChanged(event -> {
+            entidadesTab.setContent(getNode("views/entidades-view.fxml"));
+        });
+        reportesTab.setOnSelectionChanged(event -> {
+            reportesTab.setContent(getNode("views/reportes-view.fxml"));
+        });
+        utilidadesTab.setOnSelectionChanged(event -> {
+            utilidadesTab.setContent(getNode("views/utilidades-view.fxml"));
+        });
+        ayudaTab.setOnSelectionChanged(event -> {
+            ayudaTab.setContent(getNode("views/ayuda-view.fxml"));
+        });
     }
+
 
     private Node getNode(String pageURI) {
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource(pageURI));
+            FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource(pageURI));
             return fxmlLoader.load();
         } catch (IOException e) {
             throw new RuntimeException(e);
