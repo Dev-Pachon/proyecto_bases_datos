@@ -84,61 +84,107 @@ public class CargoRepository extends RepositoryWrapper<Integer, Cargo> {
     @Override
     public void save(Cargo cargo) {
         Connection conexion = null;
-        ResultSet rs = null;
+        int rs = -1;
 
         try {
             conexion = conectar();
-            rs = ejecutarQuery(conexion, "INSERT INTO `Cargo` (`Nombre`, `Salario`) VALUES (?, ?)",
+            rs = modificarQuery(conexion, "INSERT INTO `Cargo` (`Nombre`, `Salario`) VALUES (?, ?)",
                     cargo.getNombre(),
                     cargo.getSalario());
-            if (!rs.next()) {
+
+            cargo.getFunciones().forEach(e -> {
+                Funcion funcion = funcionRepository.findbyId(e);
+                saveCargoFuncion(cargo, funcion);
+            });
+
+            if (rs == -1) {
                 throw new RuntimeException("Cargo no guardado");
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            finalizarConexion(conexion, null, rs);
+            finalizarConexion(conexion, null, null);
+        }
+    }
+
+    private void saveCargoFuncion(Cargo cargo, Funcion funcion) {
+        Connection conexion = null;
+        int rs = -1;
+
+        try {
+            conexion = conectar();
+            rs = modificarQuery(conexion, "INSERT INTO `FuncionCargo` (`Funcion`, `Cargo`) VALUES (?, ?)",
+                    cargo.getCodigo(),
+                    funcion.getCodigo());
+            if (rs == -1) {
+                throw new RuntimeException("Relacion Funcion Cargo no guardado");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            finalizarConexion(conexion, null, null);
         }
     }
 
     @Override
     public void delete(Integer integer) {
         Connection conexion = null;
-        ResultSet rs = null;
+        int rs = -1;
 
         try {
             conexion = conectar();
-            rs = ejecutarQuery(conexion, "DELETE FROM Cargo WHERE Codigo = ?", integer);
-            if (!rs.next()) {
+            rs = modificarQuery(conexion, "DELETE FROM Cargo WHERE Codigo = ?", integer);
+            if (rs == -1) {
                 throw new RuntimeException("Cargo no eliminada o no existe");
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            finalizarConexion(conexion, null, rs);
+            finalizarConexion(conexion, null, null);
+        }
+    }
+
+    public void deleteCargoFuncion(Integer funcion, Integer cargo) {
+        Connection conexion = null;
+        int rs = -1;
+
+        try {
+            conexion = conectar();
+            rs = modificarQuery(conexion, "DELETE FROM FuncionCargo WHERE Funcion = ? AND Cargo = ?", funcion, cargo);
+            if (rs == -1) {
+                throw new RuntimeException("Cargo no eliminada o no existe");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            finalizarConexion(conexion, null, null);
         }
     }
 
     @Override
     public void update(Cargo cargo) {
         Connection conexion = null;
-        ResultSet rs = null;
+        int rs = -1;
 
         try {
             conexion = conectar();
-            rs = ejecutarQuery(conexion, "UPDATE Cargo t\n" +
-                            "SET t.Nombre = '?',\n" +
-                            "    t.Salario  = '?',\n" +
-                            "WHERE t.Codigo = ?;\n",
+            rs = modificarQuery(conexion, """
+                            UPDATE Cargo t
+                            SET t.Nombre = '?',
+                                t.Salario  = '?',
+                            WHERE t.Codigo = ?;
+                            """,
                     cargo.getNombre(),
-                    cargo.getSalario());
-            if (!rs.next()) {
-                throw new RuntimeException("Bitacora no actualizada o no existe");
+                    cargo.getSalario(),
+                    cargo.getCodigo());
+
+            if (rs == -1) {
+                throw new RuntimeException("Cargo no actualizada o no existe");
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            finalizarConexion(conexion, null, rs);
+            finalizarConexion(conexion, null, null);
         }
     }
 }

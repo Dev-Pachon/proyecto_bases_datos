@@ -85,9 +85,9 @@ CREATE TABLE `Nivel`
 CREATE TABLE `Usuario`
 (
     `Codigo`        INT         NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    `NomUsuario`    VARCHAR(64) NOT NULL,
+    `NomUsuario`    VARCHAR(64) NOT NULL UNIQUE,
     `Clave`         VARCHAR(64) NOT NULL,
-    `FechaCreacion` DATETIME        NOT NULL,
+    `FechaCreacion` DATETIME    NOT NULL,
     `Nivel`         INT         NOT NULL,
     FOREIGN KEY (`Nivel`) REFERENCES `Nivel` (`Codigo`)
 );

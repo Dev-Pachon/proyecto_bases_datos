@@ -1,10 +1,13 @@
 package application.banco.service.serviceImpl;
 
 import application.banco.model.Bitacora;
+import application.banco.model.Usuario;
 import application.banco.repository.repositoryImpl.BitacoraRepository;
 import application.banco.service.IBitacoraService;
 
 import java.util.List;
+
+import static org.apache.commons.codec.digest.DigestUtils.md5Hex;
 
 public class BitacoraService implements IBitacoraService {
 
@@ -16,16 +19,29 @@ public class BitacoraService implements IBitacoraService {
 
     @Override
     public Bitacora crearBitacora(Bitacora bitacora) {
-        return null;
+        bitacoraRepository.save(bitacora);
+        return bitacora;
     }
 
     @Override
     public Bitacora actualizarBitacora(Bitacora bitacora) {
-        return null;
+        Bitacora toSave = bitacoraRepository.findbyId(bitacora.getCodigo());
+        if (toSave == null) {
+            return null;
+        }
+
+        bitacoraRepository.update(bitacora);
+
+        return bitacora;
     }
 
     @Override
     public Bitacora eliminarBitacora(Integer id) {
+        Bitacora toDelete = bitacoraRepository.findbyId(id);
+        if (toDelete == null) {
+            return null;
+        }
+        bitacoraRepository.delete(id);
         return null;
     }
 

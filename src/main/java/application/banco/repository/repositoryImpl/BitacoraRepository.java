@@ -61,65 +61,68 @@ public class BitacoraRepository extends RepositoryWrapper<Integer, Bitacora> {
     public void save(Bitacora bitacora) {
 
         Connection conexion = null;
-        ResultSet rs = null;
+        int rs = -1;
 
         try {
             conexion = conectar();
-            rs = ejecutarQuery(conexion, "INSERT INTO Bitacora (FechaIngreso, FechaSalida, Usuario) VALUES (?, ?, ?)",
+            rs = modificarQuery(conexion, "INSERT INTO Bitacora (FechaIngreso, FechaSalida, Usuario) VALUES (?, ?, ?)",
                     bitacora.getUsuario(),
                     bitacora.getFechaIngreso(),
                     bitacora.getFechaSalida());
-            if (!rs.next()) {
+            if (rs == -1) {
                 throw new RuntimeException("Bitacora no guardada");
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            finalizarConexion(conexion, null, rs);
+            finalizarConexion(conexion, null, null);
         }
     }
 
     @Override
     public void delete(Integer integer) {
         Connection conexion = null;
-        ResultSet rs = null;
+        int rs = -1;
 
         try {
             conexion = conectar();
-            rs = ejecutarQuery(conexion, "DELETE FROM Bitacora WHERE Codigo = ?", integer);
-            if (!rs.next()) {
+            rs = modificarQuery(conexion, "DELETE FROM Bitacora WHERE Codigo = ?", integer);
+            if (rs == -1) {
                 throw new RuntimeException("Bitacora no eliminada o no existe");
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            finalizarConexion(conexion, null, rs);
+            finalizarConexion(conexion, null, null);
         }
     }
 
     @Override
     public void update(Bitacora bitacora) {
         Connection conexion = null;
-        ResultSet rs = null;
+        int rs = -1;
 
         try {
             conexion = conectar();
-            rs = ejecutarQuery(conexion, "UPDATE Bitacora t\n" +
-                            "SET t.FechaIngreso = '?',\n" +
-                            "    t.FechaSalida  = '?',\n" +
-                            "    t.Usuario      = ?\n" +
-                            "WHERE t.Codigo = ?;\n",
+            rs = modificarQuery(conexion, """
+                            UPDATE Bitacora t
+                            SET t.FechaIngreso = '?',
+                                t.FechaSalida  = '?',
+                                t.Usuario      = ?
+                            WHERE t.Codigo = ?;
+                            """,
                     bitacora.getFechaIngreso(),
                     bitacora.getFechaSalida(),
-                    bitacora.getUsuario()
+                    bitacora.getUsuario(),
+                    bitacora.getCodigo()
             );
-            if (!rs.next()) {
+            if (rs == -1) {
                 throw new RuntimeException("Bitacora no actualizada o no existe");
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            finalizarConexion(conexion, null, rs);
+            finalizarConexion(conexion, null, null);
         }
     }
 }

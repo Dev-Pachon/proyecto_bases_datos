@@ -58,4 +58,19 @@ public abstract class RepositoryWrapper<T, V> implements IRepository<T, V> {
             throw new RuntimeException(e);
         }
     }
+
+    protected Integer modificarQuery(Connection conexion, String query, Object... params) {
+        PreparedStatement pstmt = null;
+        try {
+            conexion = conectar();
+            pstmt = conexion.prepareStatement(query);
+            for (int i = 0; i < params.length; i++) {
+                pstmt.setObject(i + 1, params[i]);
+            }
+
+            return pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

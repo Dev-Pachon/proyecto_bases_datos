@@ -10,9 +10,9 @@ public interface IMunicipioService {
 
     public Municipio actualizarMunicipio(Municipio municipio);
 
-    public Municipio eliminarMunicipio(String id);
+    public Municipio eliminarMunicipio(Integer id);
 
-    public Municipio buscarMunicipio(String id);
+    public Municipio buscarMunicipio(Integer id);
 
     public List<Municipio> buscarTodos();
 
